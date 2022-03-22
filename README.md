@@ -107,6 +107,32 @@ The data is now successfully uploaded to the GridDB platform.
 Importing Dataset from GridDB:
 
 We can easily extract the data from GridDB by creating the container and querying the relevant rows using TQL commands, a query language similar to SQL. We will use different containers and variables to store the two datasets separately.
+```python
+# Define the container names
+apps_container = "apps_container"
+
+# Get the containers
+obtained_apps = gridstore.get_container(apps_container)
+    
+# Fetch all rows - language_tag_container
+query = obtained_apps.query("select *")
+    
+rs = query.fetch(False)
+print(f"{apps_container} Data")
+    
+# Iterate and create a list
+retrieved_data= []
+while rs.has_next():
+    data = rs.next()
+    retrieved_data.append(data)
+
+# Convert the list to a pandas data frame
+apps = pd.DataFrame(retrieved_data, columns=["ID","App","Category","Rating","Reviews","Size","Installs","Type","Price","Genres"])
+
+# Get the data frame details
+print(apps)
+apps.info()
+```
 
 Our data is now ready to be used for analysis.
 
@@ -114,10 +140,38 @@ Our data is now ready to be used for analysis.
 
 We will start our analysis by exploring the dataset and understanding a few characteristics of the dataset.
 
-1. The Total number of distinct apps in our dataset.
+1. The Total number of distinct apps in our dataset
+
+```python
+# Print the total number of apps
+print('Total number of apps in the dataset = ', len(apps))
+```
+![](/Images/NumberofApps.JPG)
+
 2. Most expensive app
+
+```python
+Expensiveapp = appdata.iloc[appdata['Price'].idxmax()]
+```
+![](/Images/ExpensiveApp.JPG)
+
 3. Total number of categories in our dataset
+
+```python
+# Print the total number of unique categories
+num_categories = len(apps['Category'].unique())
+print('Number of categories = ', num_categories)
+```
+![](/Images/NumberofCategories.JPG)
+
 4. Average app rating
+
+```python
+avg_app_rating = apps['Rating'].mean()
+print('Average app rating = ', avg_app_rating)
+```
+![](/Images/AverageRating.JPG)
+
 
 We will continue our analysis by plotting some graphs against different specifications of an application. For example, we will start by dividing the apps into categories and then plotting the number of apps in each category to explore the most popular category among apps on the play store.
 
