@@ -10,7 +10,7 @@ GridDB is a highly scalable and in-memory No SQL database that allows parallel p
 
 Setup GridDB:
 
-First and foremost, we need to make sure that we have properly installed GridDB on our system. Using this link, you can find the step-by-step guide to set up GridDB on different operating systems.
+First and foremost, we need to make sure that we have properly installed GridDB on our system. Our step-by-step guide available on the website can assist you with setting up GridDB on different operating systems.
 
 Dataset:
 
@@ -18,13 +18,48 @@ We will be using the dataset from the google play store stored in the CSV &#39;a
 
 Preprocessing:
 
-Before exporting the data to the GridDB platform, we will perform some preprocessing tasks to clean our data for optimal performance by GridDB. We will read the raw data available to us as CSV files.
+Before exporting the data to the GridDB platform, we will perform some preprocessing tasks to clean our data for optimal performance by GridDB. We will read the raw data available to us as CSV file.
+
+```python
+apps_with_duplicates = pd.read_csv('datasets/apps.csv')    
+```
 
 We have our dataset saved as a dataframe to start the cleaning process. We would be removing some duplicates and null values from the apps dataset. We would also drop some columns that are not required for our analysis in this project and reset the index column to avoid discrepancies in our data.
 
+```python
+apps = apps_with_duplicates.drop_duplicates()
+apps.dropna(inplace=True)
+apps.drop_columns(['Content Rating', 'Last Updated', 'Current Ver', 'Android Ver'])   
+apps.reset_index(drop=True, inplace=True)
+apps.index.name = 'ID' 
+```
+
 The last step before storing the dataset is to remove the special characters from our dataset to be able to easily read our numerical data. We have a list of special characters already known that we would remove from our numerical columns.
 
+
+```python
+# List of characters to remove
+chars_to_remove = ['+', ',', 'M', '$']
+# List of column names to clean
+cols_to_clean = ['Installs', 'Size', 'Price']
+
+
+
+# Loop for each column
+for col in cols_to_clean:
+    # Replace each character with an empty string
+    for char in chars_to_remove:
+        #print(col)
+        #print(char)
+        apps[col] = apps[col].astype(str).str.replace(char, '')
+    apps[col] = pd.to_numeric(apps[col])
+
+```
 We will save the dataframes as local copies on our device before uploading them on GridDB.
+
+```python
+apps.to_csv("apps_processed.csv")
+```
 
 Exporting Dataset into GridDB:
 
