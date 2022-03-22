@@ -10,25 +10,41 @@ try:
     
     
     apps_with_duplicates = pd.read_csv('datasets/apps.csv')
-    reviews = pd.read_csv('datasets/user_reviews.csv')
     
     apps = apps_with_duplicates.drop_duplicates()
     apps.drop_columns(['Content Rating', 'Last Updated', 'Current Ver', 'Android Ver'])   
     apps.dropna(inplace=True)
     apps.reset_index(drop=True, inplace=True)
     apps.index.name = 'ID'
-
-        
-    apps.to_csv("appdata_processed.csv")
+    
+        # List of characters to remove
+    chars_to_remove = ['+', ',', 'M', '$']
+    
+    # List of column names to clean
+    cols_to_clean = ['Installs', 'Size', 'Price']
+    
+    
+    
+    # Loop for each column
+    for col in cols_to_clean:
+        # Replace each character with an empty string
+        for char in chars_to_remove:
+            #print(col)
+            #print(char)
+            apps[col] = apps[col].astype(str).str.replace(char, '')
+        apps[col] = pd.to_numeric(apps[col]) 
+    
+    apps.to_csv("apps_processed.csv")
 
     #read the cleaned data from csv
-    appdata = pd.read_csv("appdata_processed.csv")
+    apps = pd.read_csv("apps_processed.csv")
+    
 
-    for row in appdata.itertuples(index=False):
+    for row in apps.itertuples(index=False):
             print(f"{row}")
 
     # View the structure of the data frames
-    appdata.info()
+    apps.info()
 
     # Provide the necessary arguments
     gridstore = factory.get_store(
@@ -40,10 +56,10 @@ try:
     )
 
     #Create container 
-    appdata_container = "appdata_container"
+    app_container = "app_container"
 
     # Create containerInfo
-    appdata_containerInfo = griddb.ContainerInfo(appdata_container,
+    app_containerInfo = griddb.ContainerInfo(app_container,
                     [["ID", griddb.Type.INTEGER],
         		    ["App", griddb.Type.STRING],
          		    ["Category", griddb.Type.STRING],
@@ -56,10 +72,10 @@ try:
          		    ["Genres", griddb.Type.FLOAT]],
                     griddb.ContainerType.COLLECTION, True)
     
-    appdata_columns = gridstore.put_container(appdata_containerInfo)
+    app_columns = gridstore.put_container(app_containerInfo)
     
     # Put rows
-    appdata_columns.put_rows(appdata)
+    app_columns.put_rows(apps)
     
     print("App Data Inserted using the DataFrame")
 
