@@ -151,7 +151,7 @@ print('Total number of apps in the dataset = ', len(apps))
 2. Most expensive app
 
 ```python
-Expensiveapp = appdata.iloc[appdata['Price'].idxmax()]
+Expensiveapp = apps.iloc[appdata['Price'].idxmax()]
 ```
 ![](/Images/ExpensiveApp.JPG)
 
@@ -193,6 +193,7 @@ type_installs = apps[["Installs","Type"]].groupby(by = "Type").mean()
 sns.barplot(data=type_installs, x=type_installs.index , y = "Installs" )
 ```
 ![](/Images/Type_Installs.png)
+
 The results are as expected. People tend to download applications that are free and are usually reluctant to pay for them unless necessary.
 
 We will compare the price of the app across different categories. Selecting a few popular categories out of our dataset then plotting it across the apps with prices lesser than $100 would give us a better understanding of the pricing strategy used while developing mobile applications, because most of the applications in our dataset lie below $100 and others would be considered as outliers.
