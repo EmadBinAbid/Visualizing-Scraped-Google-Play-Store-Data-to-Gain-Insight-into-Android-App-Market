@@ -65,9 +65,42 @@ Exporting Dataset into GridDB:
 
 Now we will upload the data to GridDB. For that, we will read the processed CSV files from the local drive and save them to different dataframes.
 
-Now, we will create a container to pass our column info of apps to the GridDB to be able to generate the design of the database before inserting the row information.
+```python
+#read the cleaned data from csv
+apps = pd.read_csv("apps_processed.csv")
+```
+
+Next, we will create a container to pass our column info of apps to the GridDB to be able to generate the design of the database before inserting the row information.
+
+```python
+#Create container 
+apps_container = "apps_container"
+
+# Create containerInfo
+apps_containerInfo = griddb.ContainerInfo(apps_container,
+                    [["ID", griddb.Type.INTEGER],
+        		    ["App", griddb.Type.STRING],
+         		    ["Category", griddb.Type.STRING],
+                    ["Rating", griddb.Type.FLOAT],
+                    ["Reviews", griddb.Type.FLOAT],
+         		    ["Size", griddb.Type.FLOAT],
+                    ["Installs", griddb.Type.STRING],
+                    ["Type", griddb.Type.STRING],
+                    ["Price", griddb.Type.FLOAT],
+         		    ["Genres", griddb.Type.FLOAT]],
+                    griddb.ContainerType.COLLECTION, True)
+                    
+apps_columns = gridstore.put_container(apps_containerInfo)
+
+```
 
 After completing the schema, we will insert our row-wise data into the GridDB.
+
+```python
+# Put rows
+apps_columns.put_rows(apps)
+
+```
 
 The data is now successfully uploaded to the GridDB platform.
 
