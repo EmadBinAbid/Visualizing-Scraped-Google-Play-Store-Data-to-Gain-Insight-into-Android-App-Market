@@ -175,11 +175,48 @@ print('Average app rating = ', avg_app_rating)
 
 We will continue our analysis by plotting some graphs against different specifications of an application. For example, we will start by dividing the apps into categories and then plotting the number of apps in each category to explore the most popular category among apps on the play store.
 
+```python
+# Count the number of apps in each 'Category' and sort them in descending order
+num_apps_in_category = apps['Category'].value_counts().sort_values(ascending = False)
+num_apps_in_category.plot.bar()
+plt.show()
+```
+
+![](/Images/NumberofAppsperCategory.JPG)
+
+We can see that most of the applications belong to the 'Family' category. One of the reason for high number of applications in this category might be that it targets most of the audience and therefore they have higher chances of success in the market.  
+
 We would then use our dataset to gain insights about user preference for the cost of the app. There are two types of apps available on Google Playstore, mostly are free which means they cost $0, while some are paid apps. Let us compare the number of installs for paid applications vs free applications.
 
+```python
+type_installs = apps[["Installs","Type"]].groupby(by = "Type").mean()
+sns.barplot(data=type_installs, x=type_installs.index , y = "Installs" )
+```
+![](/Images/Type_Installs.png)
 The results are as expected. People tend to download applications that are free and are usually reluctant to pay for them unless necessary.
 
-We will compare the price of the app across different categories. Selecting a few popular categories out of our dataset then plotting it across the apps with prices lesser than $100 would give us a better understanding of the pricing strategy used while developing mobile applications.
+We will compare the price of the app across different categories. Selecting a few popular categories out of our dataset then plotting it across the apps with prices lesser than $100 would give us a better understanding of the pricing strategy used while developing mobile applications, because most of the applications in our dataset lie below $100 and others would be considered as outliers.
+
+```python
+# Select a few popular app categories
+popular_app_cats = apps[apps.Category.isin(['GAME', 'FAMILY', 'PHOTOGRAPHY',
+                                            'MEDICAL', 'TOOLS', 'FINANCE',
+                                            'LIFESTYLE','BUSINESS'])]
+
+# Select apps priced below $100
+apps_under_100 = popular_app_cats[popular_app_cats['Price']<100]
+
+fig, ax = plt.subplots()
+fig.set_size_inches(15, 8)
+
+# Examine price vs category with the authentic apps (apps_under_100)
+ax = sns.stripplot(x='Price', y='Category', data=apps_under_100,
+                   jitter=True, linewidth=1)
+ax.set_title('App pricing trend across categories after filtering for outliers')
+plt.show()
+```
+![](/Images/Category_Price.png)
+
 
 We can see that most of the expensive apps belong to the business or medical field, while apps belonging to games, tools, or photography categories lie under $20. This is because of the selected users for which the application is specified. Most of the games of tools or photography applications are designed for leisure purposes and people tend to think twice to spend money on these applications. They generate revenues mostly through ads and/or third-party collaborations.
 
