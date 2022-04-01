@@ -29,7 +29,7 @@ We have our dataset saved as a dataframe to start the cleaning process. We would
 ```python
 apps = apps_with_duplicates.drop_duplicates()
 apps.dropna(inplace=True)
-apps.drop_columns(['Content Rating', 'Last Updated', 'Current Ver', 'Android Ver'])   
+apps.drop(['Genres','Content Rating', 'Last Updated', 'Current Ver', 'Android Ver'],axis = 1)   
 apps.reset_index(drop=True, inplace=True)
 apps.index.name = 'ID' 
 ```
@@ -86,8 +86,7 @@ apps_containerInfo = griddb.ContainerInfo(apps_container,
          		    ["Size", griddb.Type.FLOAT],
                     ["Installs", griddb.Type.STRING],
                     ["Type", griddb.Type.STRING],
-                    ["Price", griddb.Type.FLOAT],
-         		    ["Genres", griddb.Type.FLOAT]],
+                    ["Price", griddb.Type.FLOAT]],
                     griddb.ContainerType.COLLECTION, True)
                     
 apps_columns = gridstore.put_container(apps_containerInfo)
@@ -127,7 +126,7 @@ while rs.has_next():
     retrieved_data.append(data)
 
 # Convert the list to a pandas data frame
-apps = pd.DataFrame(retrieved_data, columns=["ID","App","Category","Rating","Reviews","Size","Installs","Type","Price","Genres"])
+apps = pd.DataFrame(retrieved_data, columns=["ID","App","Category","Rating","Reviews","Size","Installs","Type","Price"])
 
 # Get the data frame details
 print(apps)
