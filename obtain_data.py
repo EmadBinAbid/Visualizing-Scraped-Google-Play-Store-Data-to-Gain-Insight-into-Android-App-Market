@@ -27,7 +27,7 @@ try:
     # Get the containers
     obtained_appdata = gridstore.get_container(appdata_container)
     
-    # Fetch all rows - language_tag_container
+    # Fetch all rows
     query = obtained_appdata.query("select *")
     
     rs = query.fetch(False)
@@ -42,7 +42,7 @@ try:
 
     # Convert the list to a pandas data frame
     apps = pd.DataFrame(retrieved_data,
-                        columns=["ID","App","Category","Rating","Reviews","Size","Installs","Type","Price","Genres"])
+                        columns=["ID","App","Category","Rating","Reviews","Size","Installs","Type","Price"])
 
     # Get the data frame details
     print(apps)

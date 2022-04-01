@@ -9,11 +9,11 @@ argv = sys.argv
 try:
     
     
-    apps_with_duplicates = pd.read_csv('datasets/apps.csv')
+    apps_with_duplicates = pd.read_csv('datasets/apps.csv', index_col=0)
     
     apps = apps_with_duplicates.drop_duplicates()
-    apps.drop_columns(['Content Rating', 'Last Updated', 'Current Ver', 'Android Ver'])   
-    apps.dropna(inplace=True)
+    apps = apps.drop(['Genres', 'Content Rating', 'Last Updated', 'Current Ver', 'Android Ver'], axis = 1)
+    apps= apps.dropna(inplace=True)
     apps.reset_index(drop=True, inplace=True)
     apps.index.name = 'ID'
     
@@ -56,7 +56,7 @@ try:
     )
 
     #Create container 
-    app_container = "app_container"
+    app_container = "app_container3200"
 
     # Create containerInfo
     app_containerInfo = griddb.ContainerInfo(app_container,
@@ -64,12 +64,11 @@ try:
         		    ["App", griddb.Type.STRING],
          		    ["Category", griddb.Type.STRING],
                     ["Rating", griddb.Type.FLOAT],
-                    ["Reviews", griddb.Type.FLOAT],
+                    ["Reviews", griddb.Type.INTEGER],
          		    ["Size", griddb.Type.FLOAT],
-                    ["Installs", griddb.Type.STRING],
+                    ["Installs", griddb.Type.INTEGER],
                     ["Type", griddb.Type.STRING],
-                    ["Price", griddb.Type.FLOAT],
-         		    ["Genres", griddb.Type.FLOAT]],
+                    ["Price", griddb.Type.FLOAT]],
                     griddb.ContainerType.COLLECTION, True)
     
     app_columns = gridstore.put_container(app_containerInfo)
