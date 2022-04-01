@@ -21,7 +21,7 @@ Preprocessing:
 Before exporting the data to the GridDB platform, we will perform some preprocessing tasks to clean our data for optimal performance by GridDB. We will read the raw data available to us as CSV file.
 
 ```python
-apps_with_duplicates = pd.read_csv('datasets/apps.csv')    
+apps_with_duplicates = pd.read_csv('datasets/apps.csv', index_col=0)    
 ```
 
 We have our dataset saved as a dataframe to start the cleaning process. We would be removing some duplicates and null values from the apps dataset. We would also drop some columns that are not required for our analysis in this project and reset the index column to avoid discrepancies in our data.
